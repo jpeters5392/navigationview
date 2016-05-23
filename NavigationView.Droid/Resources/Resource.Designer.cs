@@ -1931,7 +1931,7 @@ namespace NavigationViewDemo.Droid
 			public const int contentPanel = 2131099722;
 			
 			// aapt resource value: 0x7f060072
-			public const int currentAccount = 2131099762;
+			public const int currentAccountLayout = 2131099762;
 			
 			// aapt resource value: 0x7f060075
 			public const int currentUserEmail = 2131099765;

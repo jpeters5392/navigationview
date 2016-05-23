@@ -5,6 +5,8 @@ using Android.Support.V7.App;
 using Android.Support.V4.Widget;
 using Android.Support.V4.View;
 using Android.Support.Design.Widget;
+using System;
+using Android.Widget;
 
 namespace NavigationViewDemo.Droid
 {
@@ -13,6 +15,10 @@ namespace NavigationViewDemo.Droid
 	{
 		private DrawerLayout drawerLayout;
 		private NavigationView navigationView;
+		private View currentAccountLayout;
+		private ImageView userSelector;
+
+		private bool isAccountSelectorOpen = false;
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -23,6 +29,8 @@ namespace NavigationViewDemo.Droid
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
 			this.drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawerLayout);
 			this.navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
+			this.currentAccountLayout = this.navigationView.GetHeaderView(0).FindViewById<View>(Resource.Id.currentAccountLayout);
+			this.userSelector = this.navigationView.GetHeaderView(0).FindViewById<ImageView>(Resource.Id.userSelector);
 
 			// configure the toolbar
 			this.SetSupportActionBar(toolbar);
@@ -32,9 +40,13 @@ namespace NavigationViewDemo.Droid
 			// add an event handler for when the user attempts to navigate
 			this.navigationView.NavigationItemSelected += this.NavigateToItem;
 
+			this.currentAccountLayout.Click += OnToggleAccountSelector;
+
 			if (bundle == null)
 			{
-				SwitchFragment(new HomeFragment());	
+				SwitchFragment(new HomeFragment());
+				isAccountSelectorOpen = true;
+				ToggleAccountSelectorView();
 			}
 		}
 
@@ -96,11 +108,48 @@ namespace NavigationViewDemo.Droid
 			}
 		}
 
+		protected void OnToggleAccountSelector(object sender, EventArgs e)
+		{
+			this.ToggleAccountSelectorView();
+		}
+
+		protected void ToggleAccountSelectorView()
+		{
+			if (isAccountSelectorOpen)
+			{
+				this.userSelector.SetImageResource(Android.Resource.Drawable.ArrowDownFloat);
+				this.navigationView.Menu.SetGroupVisible(Resource.Id.accountSelector, false);
+				this.navigationView.Menu.SetGroupVisible(Resource.Id.navOptions, true);
+			}
+			else
+			{
+				this.userSelector.SetImageResource(Android.Resource.Drawable.ArrowUpFloat);
+				this.navigationView.Menu.SetGroupVisible(Resource.Id.accountSelector, true);
+				this.navigationView.Menu.SetGroupVisible(Resource.Id.navOptions, false);
+			}
+
+			isAccountSelectorOpen = !isAccountSelectorOpen;
+		}
+
 		#region OnDestroy
 		protected override void OnDestroy()
 		{
+			if (this.userSelector != null)
+			{
+				this.userSelector.Dispose();
+				this.userSelector = null;
+			}
+
+			if (this.currentAccountLayout != null)
+			{
+				this.currentAccountLayout.Click -= OnToggleAccountSelector;
+				this.currentAccountLayout.Dispose();
+				this.currentAccountLayout = null;
+			}
+
 			if (this.navigationView != null)
 			{
+				this.navigationView.NavigationItemSelected -= this.NavigateToItem;
 				this.navigationView.Dispose();
 				this.navigationView = null;
 			}
