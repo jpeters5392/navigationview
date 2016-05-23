@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="Hello">Hello World, Click Me!</string>
     <string name="ApplicationName">NavigationView.Droid</string>
+	<string name="homeFragment">Home</string>
+	<string name="homeFragmentText">This is the Home Fragment</string>
+	<string name="secondFragment">Second</string>
+	<string name="secondFragmentText">This is the Second Fragment</string>
+	<string name="addAccount">Add Account</string>
 </resources>
